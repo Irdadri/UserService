@@ -13,16 +13,22 @@ public class CustomUserDetails implements UserDetails {
     private String password;
     private List<GrantedAuthority> authorities;
     private int id;
+    private String userKey;
 
     public CustomUserDetails(Utente utente) {
         this.username = utente.getEmail();
         this.password = utente.getPassword();
         this.id = utente.getId();
         this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + utente.getTipoUtente().name()));
+        this.userKey = utente.getUserKey();
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getUserKey(){
+        return userKey;
     }
 
     @Override

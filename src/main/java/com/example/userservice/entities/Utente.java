@@ -34,4 +34,7 @@ public class Utente {
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_utente")
     private TipoUtenteEnum tipoUtente;
+
+    @Column(name = "uuid")
+    private String userKey;
 }

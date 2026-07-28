@@ -41,7 +41,8 @@ public class JWTWebSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/generateToken", "/auth/creaUtente/**", "auth/delete/**").permitAll()
+                        .requestMatchers("/auth/generateToken", "/auth/creaUtente/**", "auth/deleteUser/**",
+                                "/auth/getUtenti", "/auth/currentUtente", "/auth/updateUtente/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(provider)
