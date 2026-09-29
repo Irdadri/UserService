@@ -71,8 +71,14 @@ public class AuthController {
         log.info("Richiesta effettuata da: "
                 + authentication.getName());
 
-        UtenteDTO utenteDTO = modelMapper.map(utenteService.getUtenteByEmail(email), UtenteDTO.class);
-        log.info(utenteDTO.getPassword());
+        Utente utente = utenteService.getUtenteByEmail(email);
+        UtenteDTO utenteDTO;
+        if(utente != null){
+            utenteDTO = modelMapper.map(utente, UtenteDTO.class);
+            log.info(utenteDTO.getPassword());
+        } else {
+            utenteDTO = null;
+        }
 
         return ResponseEntity.ok(utenteDTO);
     }
@@ -87,8 +93,11 @@ public class AuthController {
     @PostMapping("/currentUtente")
     public ResponseEntity<?> getCurrentUtente(@RequestBody String userKey) {
         UtenteDTO utenteDTO =utenteService.getCurrentUtente(userKey);
+
         if(utenteDTO != null){
+            log.info(utenteDTO.getUserKey());
             return ResponseEntity.ok(utenteService.getCurrentUtente(userKey));
+
         } else {
             return ResponseEntity.notFound().build();
         }

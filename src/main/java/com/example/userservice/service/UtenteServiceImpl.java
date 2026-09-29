@@ -47,11 +47,20 @@ public class UtenteServiceImpl implements UtenteService {
 
     @Override
     public String creaUtente(UtenteRequest utenteRequest) {
-        Utente utente = modelMapper.map(utenteRequest, Utente.class);
-        utente.setUserKey(UUID.randomUUID().toString());
-        utente.setPassword(passwordEncoder.encode(utente.getPassword()));
-        repository.save(utente);
-        return utente.getUserKey();
+
+        Utente findUtente = repository.findUtenteByEmail(utenteRequest.getEmail());
+        if(findUtente == null) {
+            //se non esiste, inserisci
+            Utente utente = modelMapper.map(utenteRequest, Utente.class);
+            utente.setUserKey(UUID.randomUUID().toString());
+            utente.setPassword(passwordEncoder.encode(utente.getPassword()));
+            repository.save(utente);
+            return utente.getUserKey();
+        } else {
+            //se esiste già non fare nulla
+            //o dovrei lanciare un errore
+            return null;
+        }
     }
 
     @Override
@@ -84,6 +93,9 @@ public class UtenteServiceImpl implements UtenteService {
     public UtenteDTO getCurrentUtente(String userKey) {
         log.info(userKey);
         Utente utente = repository.findUtenteByUserKey(userKey);
+        if (utente == null) {
+            return null;
+        }
         return modelMapper.map(utente, UtenteDTO.class);
     }
 
