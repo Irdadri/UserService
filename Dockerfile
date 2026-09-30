@@ -1,24 +1,16 @@
-FROM eclipse-temurin:21-jdk AS build
-LABEL authors="Adriana"
+FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
+
+RUN apt-get update \
+    && apt-get install -y maven \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
 COPY src ./src
 
-RUN ./mvnw clean package -DskipTests
-
-FROM eclipse-temurin:21-jre
-
-WORKDIR /app
-
-COPY --from=build /app/target/*.jar userservice.jar
+RUN mvn clean package -DskipTests
 
 EXPOSE 9090
 
-RUN useradd app
-USER app
-
-CMD ["java", "-jar", "userservice.jar"]
+CMD ["sh", "-c", "java -jar target/*.jar"]
