@@ -7,6 +7,9 @@ import com.example.userservice.entities.Utente;
 import com.example.userservice.repository.UtenteRepository;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +38,7 @@ public class UtenteServiceImpl implements UtenteService {
     }
 
     @Override
+    @Cacheable(value = "utenteEmail", key = "#email")
     public Utente getUtenteByEmail(String email) {
         return repository.findUtenteByEmail(email);
     }
@@ -46,6 +50,10 @@ public class UtenteServiceImpl implements UtenteService {
     }
 
     @Override
+    @Caching( evict = {
+            @CacheEvict(value = "utente", allEntries = true),
+            @CacheEvict(value = "allUtenti", allEntries = true)
+    })
     public String creaUtente(UtenteRequest utenteRequest) {
 
         Utente findUtente = repository.findUtenteByEmail(utenteRequest.getEmail());
@@ -64,6 +72,10 @@ public class UtenteServiceImpl implements UtenteService {
     }
 
     @Override
+    @Caching( evict = {
+            @CacheEvict(value = "utente", allEntries = true),
+            @CacheEvict(value = "allUtenti", allEntries = true)
+    })
     public String updateUtente(UtenteRequest utente, String userKey) {
         Utente _utente = repository.findUtenteByUserKey(userKey);
 
@@ -85,11 +97,13 @@ public class UtenteServiceImpl implements UtenteService {
     }
 
     @Override
+    @Cacheable(value = "allUtenti", key = "#pageable.pageNumber + '-' + #pageable.pageSize")
     public Page<UtenteDTO> getAllUtenti(Pageable pageable) {
         return repository.findAll(pageable).map(utente -> modelMapper.map(utente, UtenteDTO.class));
     }
 
     @Override
+    @Cacheable(value = "utente", key = "#userKey")
     public UtenteDTO getCurrentUtente(String userKey) {
         log.info(userKey);
         Utente utente = repository.findUtenteByUserKey(userKey);
@@ -101,6 +115,10 @@ public class UtenteServiceImpl implements UtenteService {
 
 
     @Override
+    @Caching( evict = {
+            @CacheEvict(value = "utente", allEntries = true),
+            @CacheEvict(value = "allUtenti", allEntries = true)
+    })
     public void deleteUser(String userKey) {
         Utente utente = repository.findUtenteByUserKey(userKey);
         if (utente == null) {
