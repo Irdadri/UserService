@@ -52,7 +52,8 @@ public class UtenteServiceImpl implements UtenteService {
     @Override
     @Caching( evict = {
             @CacheEvict(value = "utente", allEntries = true),
-            @CacheEvict(value = "allUtenti", allEntries = true)
+            @CacheEvict(value="utente_sede", allEntries = true),
+            @CacheEvict(value = "allUser", allEntries = true)
     })
     public String creaUtente(UtenteRequest utenteRequest) {
 
@@ -74,7 +75,8 @@ public class UtenteServiceImpl implements UtenteService {
     @Override
     @Caching( evict = {
             @CacheEvict(value = "utente", allEntries = true),
-            @CacheEvict(value = "allUtenti", allEntries = true)
+            @CacheEvict(value="utente_sede", allEntries = true),
+            @CacheEvict(value = "allUser", allEntries = true)
     })
     public String updateUtente(UtenteRequest utente, String userKey) {
         Utente _utente = repository.findUtenteByUserKey(userKey);
@@ -117,7 +119,8 @@ public class UtenteServiceImpl implements UtenteService {
     @Override
     @Caching( evict = {
             @CacheEvict(value = "utente", allEntries = true),
-            @CacheEvict(value = "allUtenti", allEntries = true)
+            @CacheEvict(value="utente_sede", allEntries = true),
+            @CacheEvict(value = "allUser", allEntries = true)
     })
     public void deleteUser(String userKey) {
         Utente utente = repository.findUtenteByUserKey(userKey);
